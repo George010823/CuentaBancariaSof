@@ -4,17 +4,27 @@ import java.util.Date;
 
 public class BankAccount {
     private String idAccount;
-    private String transactionType;
+    //private String transactionType;
     private double amount;
-    private double transactionCost;
-    private Date dateTransaction;
+    //private double transactionCost;
+    //private Date dateTransaction;
+    private String mambuAccountId;
 
-    public BankAccount(String idAccount, String transactionType, double amount, double transactionCost, Date dateTransaction) {
+    public BankAccount(String idAccount, double amount, String mambuAccountId) {
         this.idAccount = idAccount;
-        this.transactionType = transactionType;
+        //this.transactionType = transactionType;
         this.amount = amount;
-        this.transactionCost = transactionCost;
-        this.dateTransaction = dateTransaction;
+        //this.transactionCost = transactionCost;
+        //this.dateTransaction = dateTransaction;
+        this.mambuAccountId = mambuAccountId;
+    }
+
+    public String getMambuAccountId() {
+        return mambuAccountId;
+    }
+
+    public void setMambuAccountId(String mambuAccountId) {
+        this.mambuAccountId = mambuAccountId;
     }
 
     public BankAccount(){}
@@ -26,13 +36,13 @@ public class BankAccount {
         this.idAccount = idAccount;
     }
 
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
-    }
+//    public String getTransactionType() {
+//        return transactionType;
+//    }
+//
+//    public void setTransactionType(String transactionType) {
+//        this.transactionType = transactionType;
+//    }
 
     public double getAmount() {
         return amount;
@@ -42,20 +52,27 @@ public class BankAccount {
         this.amount = amount;
     }
 
-    public double getTransactionCost() {
-        return transactionCost;
-    }
+//    public double getTransactionCost() {
+//        return transactionCost;
+//    }
+//
+//    public void setTransactionCost(double transactionCost) {
+//        this.transactionCost = transactionCost;
+//    }
+//
+//    public Date getDateTransaction() {
+//        return dateTransaction;
+//    }
+//
+//    public void setDateTransaction(Date dateTransaction) {
+//        this.dateTransaction = dateTransaction;
+//    }
 
-    public void setTransactionCost(double transactionCost) {
-        this.transactionCost = transactionCost;
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "idAccount='" + idAccount + '\'' +
+                ", amount=" + amount +
+                '}';
     }
-
-    public Date getDateTransaction() {
-        return dateTransaction;
-    }
-
-    public void setDateTransaction(Date dateTransaction) {
-        this.dateTransaction = dateTransaction;
-    }
-
 }

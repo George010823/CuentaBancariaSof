@@ -35,7 +35,9 @@ adapter:
   restconsumer:
     timeout: 5000
     url: "${URL_MAMBU}"
+    urlRetiro: "/deposits/{depositAccountId}/withdrawal-transactions"
     apiKey: "${API_KEY_MAMBU}"
+    authorization: "${API_KEY_MAMBU}"
 resilience4j:
   circuitbreaker:
     instances:

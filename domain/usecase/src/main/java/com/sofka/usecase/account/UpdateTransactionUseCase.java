@@ -13,6 +13,6 @@ public class UpdateTransactionUseCase implements BiFunction<String, BankAccount,
     }
 
     public Mono<BankAccount> apply(String idAccount, BankAccount bankAccount) {
-        return bankAccountGateway.updateTransaction(idAccount, bankAccount);
+        return null; //bankAccountGateway.updateTransaction(idAccount, bankAccount);
     }
 }

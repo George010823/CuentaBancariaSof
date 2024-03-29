@@ -11,6 +11,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Repository
-public interface MongoAccountDBRepository extends  ReactiveMongoRepository<BankAccountData, String> {
+public interface MongoAccountDBRepository extends  ReactiveMongoRepository<AccountDocument, String> {
 
 }

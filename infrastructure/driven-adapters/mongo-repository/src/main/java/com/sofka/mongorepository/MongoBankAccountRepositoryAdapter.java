@@ -19,12 +19,19 @@ public class MongoBankAccountRepositoryAdapter implements BankAccountGateway {
     private final MongoAccountDBRepository accountRepository;
     private final MapperAccount mapperAccount;
 
-    @Override
-    public Mono<BankAccount> create(BankAccount bankAccount) {
-        return accountRepository
-                .save(mapperAccount.toAccountEntity(bankAccount))
-                .map(mapperAccount::toAccountModel);
-    }
+//    @Override
+//    public Mono<BankAccount> create(BankAccount bankAccount) {
+//        return accountRepository
+//                .save(mapperAccount.toAccountEntity(bankAccount))
+//                .map(mapperAccount::toAccountModel);
+//    }
+//
+//    @Override
+//    public Mono<BankAccount> findById(String accountId) {
+//        return accountRepository.findById(accountId)
+//                .switchIfEmpty(Mono.error(new Throwable("Account id not found")))
+//                .map(mapperAccount::toAccountModel);
+//    }
 
     @Override
     public Mono<BankAccount> findById(String accountId) {
@@ -32,20 +39,34 @@ public class MongoBankAccountRepositoryAdapter implements BankAccountGateway {
                 .switchIfEmpty(Mono.error(new Throwable("Account id not found")))
                 .map(mapperAccount::toAccountModel);
     }
+
+
+//    @Override
+//    @Transactional
+//    public Mono<BankAccount> updateTransaction(String idAccount, BankAccount bankAccount) {
+//        return accountRepository
+//                .findById(idAccount)
+//                .switchIfEmpty(Mono.error(new RuntimeException("Could not find account for id: " + idAccount)))
+//                .flatMap(bankAccountData -> {
+//                    String transactionType = bankAccount.getTransactionType();
+//                    double currentAmount = bankAccount.getAmount();
+//                    double transactionCost = bankAccount.getTransactionCost();
+//                    bankAccountData.setTransactionType(transactionType);
+//                    bankAccountData.setAmount(currentAmount);
+//                    bankAccountData.setTransactionCost(transactionCost);
+//                    return accountRepository.save(bankAccountData)
+//                            .map(mapperAccount::toAccountModel);
+//                });
+//    }
+
+
     @Override
-    @Transactional
-    public Mono<BankAccount> updateTransaction(String idAccount, BankAccount bankAccount) {
-        return accountRepository
-                .findById(idAccount)
-                .switchIfEmpty(Mono.error(new RuntimeException("Could not find account for id: " + idAccount)))
-                .flatMap(bankAccountData -> {
-                    String transactionType = bankAccount.getTransactionType();
-                    double currentAmount = bankAccount.getAmount();
-                    double transactionCost = bankAccount.getTransactionCost();
-                    bankAccountData.setTransactionType(transactionType);
-                    bankAccountData.setAmount(currentAmount);
-                    bankAccountData.setTransactionCost(transactionCost);
-                    return accountRepository.save(bankAccountData)
+    public Mono<BankAccount> updateBalance(String accountId, Double newBalance) {
+        return accountRepository.findById(accountId)
+                .switchIfEmpty(Mono.error(new RuntimeException("Account id not found")))
+                .flatMap(account -> {
+                    account.setBalance(newBalance);
+                    return accountRepository.save(account)
                             .map(mapperAccount::toAccountModel);
                 });
     }

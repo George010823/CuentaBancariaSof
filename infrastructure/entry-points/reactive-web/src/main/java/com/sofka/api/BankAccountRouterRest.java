@@ -27,6 +27,8 @@ public class BankAccountRouterRest {
                 .andRoute(
                         PUT("/api/account/updateBalance").and(accept(MediaType.APPLICATION_JSON))
                                 .and(RequestPredicates.queryParam("id", id -> true))
-                        ,accountHandler::updateTransaction);
+                        ,accountHandler::updateTransaction)
+                .andRoute(POST("/deposits/{depositAccountId}/withdrawal-transactions")
+                        ,accountHandler::updateAccountBalance);
     }
 }

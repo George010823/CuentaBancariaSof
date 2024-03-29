@@ -15,6 +15,7 @@ public class FindAccountByIdUseCase implements Function<String, Mono<BankAccount
 
     @Override
     public Mono<BankAccount> apply(String accountId) {
+
         return accountGateway.findById(accountId);
     }
 }

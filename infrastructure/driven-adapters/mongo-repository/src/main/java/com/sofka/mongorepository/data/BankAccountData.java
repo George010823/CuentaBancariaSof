@@ -19,13 +19,22 @@ public class BankAccountData {
     private double amount;
     private double transactionCost;
     private Date dateTransaction;
+    private String mambuAccountId;
 
-    public BankAccountData(String idAccount, String transactionType, double amount, double transactionCost, Date dateTransaction) {
+    public BankAccountData(String idAccount, String transactionType, double amount, double transactionCost, Date dateTransaction, String mambuAccountId) {
         this.idAccount = idAccount;
         this.transactionType = transactionType;
         this.amount = amount;
         this.transactionCost = transactionCost;
         this.dateTransaction = dateTransaction;
+        this.mambuAccountId = mambuAccountId;
+    }
+    public String getMambuAccountId() {
+        return mambuAccountId;
+    }
+
+    public void setMambuAccountId(String mambuAccountId) {
+        this.mambuAccountId = mambuAccountId;
     }
 
     public String getIdAccount() {

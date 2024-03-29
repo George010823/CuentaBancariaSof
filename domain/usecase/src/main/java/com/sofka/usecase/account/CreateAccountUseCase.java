@@ -16,9 +16,10 @@ public class CreateAccountUseCase implements Function<BankAccount, Mono<BankAcco
 
     @Override
     public Mono<BankAccount> apply(BankAccount accountModel) {
-        return Mono.just(accountModel)
-                .filter(model -> model.getAmount() >= 0)
-                .switchIfEmpty(Mono.error(new RuntimeException("Balance cannot be negative")))
-                .flatMap(accountGateway::create);
+        return null;
+//                Mono.just(accountModel)
+//                .filter(model -> model.getAmount() >= 0)
+//                .switchIfEmpty(Mono.error(new RuntimeException("Balance cannot be negative")))
+//                .flatMap(accountGateway::create);
     }
 }
