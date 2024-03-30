@@ -42,9 +42,9 @@ public class UpdateAccountBalanceHelper {
 
     public static Double getTransactionNewBalance(MambuResponseAccountBalanceInfo accountBalanceInfo, UpdateBalanceDTO updateBalanceDTO, double tax){
         if (updateBalanceDTO.getType() == TYPE.DEPOSIT) {
-            return accountBalanceInfo.getBalances().getTotalBalance() - tax + updateBalanceDTO.getTransactionCost();
+            return accountBalanceInfo.getBalances().getTotalBalance() - tax + updateBalanceDTO.getAmount();
         } else if (updateBalanceDTO.getType() == WITHDRAW) {
-            return accountBalanceInfo.getBalances().getTotalBalance() - tax - updateBalanceDTO.getTransactionCost();
+            return accountBalanceInfo.getBalances().getTotalBalance() - tax - updateBalanceDTO.getAmount();
         }
         return accountBalanceInfo.getBalances().getTotalBalance();
     }

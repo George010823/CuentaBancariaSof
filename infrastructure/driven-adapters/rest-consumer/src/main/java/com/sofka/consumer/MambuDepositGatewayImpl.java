@@ -14,7 +14,7 @@ public class MambuDepositGatewayImpl implements IMambuDepositGateway {
 
     private final WebClient webClient;
     private boolean marcador = true;
-    private int incremeto;
+    private String concatIncremeto;
 
     public MambuDepositGatewayImpl(WebClient webClient) {
         this.webClient = webClient;
@@ -24,13 +24,13 @@ public class MambuDepositGatewayImpl implements IMambuDepositGateway {
     public Mono<ResponseRetiro> createWithDrawalTransaction(RequestRetiro mambuRequestCashOut, String accountId) {
         String externalId = mambuRequestCashOut.getExternalId();
         if (marcador){
-            incremeto+=9;
-            externalId = externalId + incremeto;
+            concatIncremeto+="AG";
+            externalId = externalId + concatIncremeto;
             mambuRequestCashOut.setExternalId(externalId);
             marcador = false;
-        } else if (!marcador) {
-            incremeto+=11;
-            externalId = externalId + incremeto+5;
+        } else {
+            concatIncremeto+=7;
+            externalId = externalId + concatIncremeto;
             mambuRequestCashOut.setExternalId(externalId);
         }
         return webClient

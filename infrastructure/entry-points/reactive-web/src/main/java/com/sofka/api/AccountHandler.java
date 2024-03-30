@@ -117,41 +117,6 @@ public class AccountHandler {
                 );
     }
 
-//    public Mono<ServerResponse> updateAccountBalance(ServerRequest request) {
-//        return request.bodyToMono(UpdateBalanceDTO.class)
-//                .flatMap(this::findMambuAccountId)
-//                .onErrorResume(exception -> ServerResponse.status(HttpStatus.NOT_FOUND)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .bodyValue(new ResponseWrapper<>(exception.getMessage(), null))
-//                );
-//    }
-//
-//    private Mono<ServerResponse> findMambuAccountId(UpdateBalanceDTO updateBalanceDTO) {
-//        return findAccountByIdUseCase.apply(updateBalanceDTO.getIdAccount())
-//                .flatMap(accountModel -> this.getMambuAccountBalance(accountModel, updateBalanceDTO));
-//    }
-//
-//    private Mono<ServerResponse> getMambuAccountBalance(BankAccount accountModel, UpdateBalanceDTO updateBalanceDTO) {
-//        return mambuGetAccountBalanceUseCase.apply(accountModel.getMambuAccountId())
-//                .flatMap(mambuResponseAccountBalanceInfo -> this.createWithDrawalTransactionCashOut(mambuResponseAccountBalanceInfo, updateBalanceDTO, accountModel));
-//    }
-//
-//    private Mono<ServerResponse> createWithDrawalTransactionCashOut(MambuResponseAccountBalanceInfo mambuResponseAccountBalanceInfo, UpdateBalanceDTO updateBalanceDTO, BankAccount accountModel) {
-//        double tax = UpdateAccountBalanceHelper.getTransactionTax(updateBalanceDTO);
-//        double newBalance = UpdateAccountBalanceHelper.getTransactionNewBalance(mambuResponseAccountBalanceInfo, updateBalanceDTO, tax);
-//
-//        if (newBalance < 0) {
-//            return Mono.error(new RuntimeException("Insufficient funds"));
-//        }
-//
-//        RequestRetiro mambuRequestBodyCashOutDTO =
-//                this.buildNewCashOutRequestBody(updateBalanceDTO, tax, "TRXCNL-CASHOUT");
-//
-//        return mambuCreateWithDrawalTransactionUseCase
-//                .apply(mambuRequestBodyCashOutDTO, accountModel.getMambuAccountId())
-//                .flatMap(mambuResponseCashOutDTO -> this.createWithDrawalTransactionCommission(mambuResponseCashOutDTO, updateBalanceDTO, accountModel));
-//    }
-
     public Mono<ServerResponse> updateAccountBalance(ServerRequest request) {
         return request.bodyToMono(UpdateBalanceDTO.class)
                 .flatMap(updateBalanceDTO -> findAccountByIdUseCase.apply(updateBalanceDTO.getIdAccount())
@@ -159,6 +124,7 @@ public class AccountHandler {
                                 .flatMap(mambuResponseAccountBalanceInfo -> {
                                     double tax = UpdateAccountBalanceHelper.getTransactionTax(updateBalanceDTO);
                                     double newBalance = UpdateAccountBalanceHelper.getTransactionNewBalance(mambuResponseAccountBalanceInfo, updateBalanceDTO, tax);
+                                    accountModel.setAmount(newBalance);
 
                                     if (newBalance < 0) {
                                         return Mono.error(new RuntimeException("Insufficient funds"));
@@ -188,15 +154,18 @@ public class AccountHandler {
         return mambuCreateWithDrawalTransactionUseCase
                 .apply(mambuRequestBodyCommissionDTO, accountModel.getMambuAccountId())
                 .flatMap(mambuResponseCommissionDTO ->
-                        this.updateMongoBalanceAndCreateMongoTransaction(mambuResponseCommissionDTO, updateBalanceDTO, mambuResponseCashOutDTO, accountModel.getMambuAccountId())
+                        this.updateMongoBalanceAndCreateMongoTransaction(mambuResponseCommissionDTO, updateBalanceDTO, mambuResponseCashOutDTO, accountModel)
                 );
     }
 
 
-    private Mono<ServerResponse> updateMongoBalanceAndCreateMongoTransaction(ResponseRetiro mambuResponseCommissionDTO, UpdateBalanceDTO updateBalanceDTO, ResponseRetiro mambuResponseCashOutDTO, String mambuAccountId) {
+    private Mono<ServerResponse> updateMongoBalanceAndCreateMongoTransaction(ResponseRetiro mambuResponseCommissionDTO, UpdateBalanceDTO updateBalanceDTO, ResponseRetiro mambuResponseCashOutDTO, BankAccount accountModel) {
+        String mambuAccountId = accountModel.getMambuAccountId();
+        double balance = accountModel.getAmount();
+        mambuResponseCommissionDTO.setAmount(balance);
         return updateAccountBalanceUseCase.apply(
                         updateBalanceDTO.getIdAccount(),
-                        mambuResponseCommissionDTO.getAccountBalances().getTotalBalance()
+                        balance
                 )
                 .then(createTransactionUseCase.apply(
                         new TransactionModel(
@@ -205,9 +174,9 @@ public class AccountHandler {
                                 updateBalanceDTO.getChannel(),
                                 UpdateAccountBalanceHelper.getTransactionTax(updateBalanceDTO),
                                 updateBalanceDTO.getIdAccount(),
-                                mambuResponseCommissionDTO.getAccountBalances().getTotalBalance(),
+                                balance,
                                 mambuResponseCommissionDTO.getCreationDate(),
-                                -mambuResponseCashOutDTO.getAmount(),
+                                UpdateAccountBalanceHelper.getTransactionTax(updateBalanceDTO),
                                 mambuAccountId,
                                 mambuResponseCashOutDTO.getParentAccountKey()
                         )
@@ -234,7 +203,7 @@ public class AccountHandler {
                     transactionValue,
                     transactionDetailsRequest,
                     trxCnlCashDepFieldsRequest,
-                    null,
+                    randomUUID2,
                     randomUUID2,
                     updateBalanceDTO.getType().toString() + "_" + updateBalanceDTO.getChannel().toString()
             );
@@ -249,7 +218,6 @@ public class AccountHandler {
                 updateBalanceDTO.getType().toString() + "_" + updateBalanceDTO.getChannel().toString()
         );
     }
-
 
     private double getTransactionCost(String transactionType) {
         TypeValueTransaction typeTransaction = TypeValueTransaction.obtenerTipoTransaccion(transactionType);

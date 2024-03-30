@@ -8,8 +8,8 @@ import java.util.Date;
 public class UpdateBalanceDTO {
     private String idAccount;
     //private String transactionType;
-    //private double amount;
-    private double transactionCost;
+    private double amount;
+    //private double transactionCost;
     //private Date dateTransaction;
     private TYPE type;
     private CHANNEL channel;
@@ -17,11 +17,11 @@ public class UpdateBalanceDTO {
     public UpdateBalanceDTO() {
     }
 
-    public UpdateBalanceDTO(String idAccount, double transactionCost, Date dateTransaction) {
+    public UpdateBalanceDTO(String idAccount, double amount, Date dateTransaction) {
         this.idAccount = idAccount;
         //this.transactionType = transactionType;
-        //this.amount = amount;
-        this.transactionCost = transactionCost;
+        this.amount = amount;
+        //this.transactionCost = transactionCost;
         //this.dateTransaction = dateTransaction;
     }
 
@@ -57,21 +57,21 @@ public class UpdateBalanceDTO {
 //        this.transactionType = transactionType;
 //    }
 //
-//    public double getAmount() {
-//        return amount;
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+//    public double getTransactionCost() {
+//        return transactionCost;
 //    }
 //
-//    public void setAmount(double amount) {
-//        this.amount = amount;
+//    public void setTransactionCost(double transactionCost) {
+//        this.transactionCost = transactionCost;
 //    }
-
-    public double getTransactionCost() {
-        return transactionCost;
-    }
-
-    public void setTransactionCost(double transactionCost) {
-        this.transactionCost = transactionCost;
-    }
 
 //    public Date getDateTransaction() {
 //        return dateTransaction;
@@ -85,7 +85,7 @@ public class UpdateBalanceDTO {
     public String toString() {
         return "UpdateBalanceDTO{" +
                 "idAccount='" + idAccount + '\'' +
-                ", transactionCost=" + transactionCost +
+                ", amount=" + amount +
                 ", type=" + type +
                 ", channel=" + channel +
                 '}';
